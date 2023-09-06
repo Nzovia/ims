@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://itsdevelopernic22:root@cluster0.jkpkpng.mongodb.net/?retryWrites=true&w=majority
+      database: ProductsDB
+      port: 27017
+      host: hostIpOnWhichMongoIsRunning
+server:
+  port: 8077
