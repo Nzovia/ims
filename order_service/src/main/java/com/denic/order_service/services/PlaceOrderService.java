@@ -52,6 +52,7 @@ public class PlaceOrderService {
         orderLineItems.setPrice(orderLineItemsDto.getPrice());
         orderLineItems.setQuantity(orderLineItemsDto.getQuantity());
         orderLineItems.setSkuCode(orderLineItemsDto.getSkuCode());
+        orderLineItems.setItemName(orderLineItems.getItemName());
         orderLineItems.setPrice(orderLineItemsDto.getPrice());
         return orderLineItems;
     }
