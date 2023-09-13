@@ -1,5 +1,6 @@
 package com.devnic.order_service.services;
 
+import com.devnic.order_service.dto.InventoryResponse;
 import com.devnic.order_service.dto.OrderLineItemsDto;
 import com.devnic.order_service.dto.OrderRequest;
 import com.devnic.order_service.models.Order;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,23 +48,33 @@ public class PlaceOrderService {
         //setOrderLineItems into the order request
         order.setOrderLineItems(orderLineItems);
 
+        //collecting all skuCode codes from different order-items in the same order
+        List<String> skuCodes = order.getOrderLineItems().stream()
+                .map(OrderLineItems::getSkuCode)
+                .toList();
+
         /*
          * Call the inventory service to check whether the item ordered is still in stock*/
-        Boolean inventoryResponse = webClient.get()
-                .uri("http://localhost:8079/api/inventory")
+        InventoryResponse[] inventoryResponsesArray = webClient.get()
+                .uri("http://localhost:8079/api/inventory/",
+                        uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToMono(InventoryResponse[].class)
                 .block(); //making web client return a synchronous request
 
+        //stream through to check whether all the products are in stock
+        boolean allInStock = Arrays.stream(inventoryResponsesArray)
+                .allMatch(InventoryResponse::isInStock);
+
         //when the result is true then we can make an order  else return a exception
-        if (inventoryResponse) {
+        if (allInStock) {
             //save to the dataBase
             orderRepository.save(order);
             log.info("order with number {} created successfully", orderNumber);
         } else {
-            throw new IllegalArgumentException("The ordered product is out of stock. please retry after 30min");
+            throw new IllegalArgumentException("One of the ordered items might be out stock." +
+                    " please retry after 30min");
         }
-
 
     }
 
