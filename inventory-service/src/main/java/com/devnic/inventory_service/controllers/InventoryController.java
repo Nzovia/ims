@@ -2,6 +2,7 @@ package com.devnic.inventory_service.controllers;
 
 import com.devnic.inventory_service.dtos.InventoryResponse;
 import com.devnic.inventory_service.services.InventoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,13 +14,10 @@ import java.util.List;
  * @Contact: itsdevelopernic22@gmail.com
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/inventory")
 public class InventoryController {
     private final InventoryService inventoryService;
-
-    public InventoryController(InventoryService inventoryService) {
-        this.inventoryService = inventoryService;
-    }
 
     // Get Request to get the inventory Status
     @GetMapping

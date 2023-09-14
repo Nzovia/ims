@@ -55,19 +55,19 @@ public class PlaceOrderService {
 
         /*
          * Call the inventory service to check whether the item ordered is still in stock*/
-        InventoryResponse[] inventoryResponsesArray = webClient.get()
-                .uri("http://localhost:8079/api/inventory/",
+        InventoryResponse[] inventoryResponses = webClient.get()
+                .uri("http://localhost:8079/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
                 .block(); //making web client return a synchronous request
 
+
         //stream through to check whether all the products are in stock
-        boolean allInStock = Arrays.stream(inventoryResponsesArray)
-                .allMatch(InventoryResponse::isInStock);
+        boolean allMatchToProductsInStock = Arrays.stream(inventoryResponses).allMatch(InventoryResponse::isInStock);
 
         //when the result is true then we can make an order  else return a exception
-        if (allInStock) {
+        if (allMatchToProductsInStock) {
             //save to the dataBase
             orderRepository.save(order);
             log.info("order with number {} created successfully", orderNumber);
