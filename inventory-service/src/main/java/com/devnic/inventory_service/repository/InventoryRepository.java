@@ -16,6 +16,6 @@ import java.util.Optional;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
-    List<Inventory> findBySkuCodeIn(List<String> skuCode);
+    List<Inventory> findBySkuCodeIn(java.util.List<java.lang.String> skuCode);
 //    List<Inventory> findBySkuCodeIn(List<String> skuCode);
 }
