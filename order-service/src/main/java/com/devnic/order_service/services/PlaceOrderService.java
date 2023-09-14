@@ -6,6 +6,7 @@ import com.devnic.order_service.dto.OrderRequest;
 import com.devnic.order_service.models.Order;
 import com.devnic.order_service.models.OrderLineItems;
 import com.devnic.order_service.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +24,10 @@ import java.util.List;
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class PlaceOrderService {
     private final OrderRepository orderRepository;
-    private final WebClient webClient;
-
-    public PlaceOrderService(OrderRepository orderRepository, WebClient webClient) {
-        this.orderRepository = orderRepository;
-        this.webClient = webClient;
-    }
+    private final WebClient.Builder webClient;
 
     public void makeAnOrder(OrderRequest orderRequest) {
         GenerateOrderNumberService orderNumberService = new GenerateOrderNumberService();
@@ -55,8 +52,8 @@ public class PlaceOrderService {
 
         /*
          * Call the inventory service to check whether the item ordered is still in stock*/
-        InventoryResponse[] inventoryResponses = webClient.get()
-                .uri("http://localhost:8079/api/inventory",
+        InventoryResponse[] inventoryResponses = webClient.build().get()
+                .uri("http://inventory-service/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)

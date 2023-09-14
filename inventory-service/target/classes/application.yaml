@@ -1,6 +1,6 @@
 
 server:
-  port: 8079
+  port: 8079  # by setting server port to 0 you allow the services to run on multiple instances on every time of restart (initial port, 8079)
 spring:
   application:
     name: inventory-service
