@@ -2,6 +2,8 @@
 server:
   port: 8078
 spring:
+  application:
+    name: order-service
   datasource:
     username: root
     password: root
@@ -11,3 +13,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+

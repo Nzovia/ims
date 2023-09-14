@@ -6,4 +6,4 @@ eureka:
     register-with-eureka: false
     fetch-registry: true
 server:
-  port: 8761
+  port: 8761  #default localhost port

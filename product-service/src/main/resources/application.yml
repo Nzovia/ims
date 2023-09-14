@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: product-service
   data:
     mongodb:
       uri: mongodb+srv://itsdevelopernic22:root@cluster0.jkpkpng.mongodb.net/?retryWrites=true&w=majority
@@ -7,3 +9,8 @@ spring:
       host: hostIpOnWhichMongoIsRunning
 server:
   port: 8077
+#  information on where to find the Eureka server
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
