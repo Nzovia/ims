@@ -19,6 +19,7 @@
         <module>inventory-service</module>
         <module>order-service</module>
         <module>discovery_server</module>
+        <module>ims-api-gateway</module>
     </modules>
 
     <properties>
