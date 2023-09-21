@@ -3,7 +3,7 @@ eureka:
   instance:
     hostname: localhost
   client:
-    register-with-eureka: false
-    fetch-registry: true
+    register-with-eureka: false #disables the server from being registered as a client
+    fetch-registry: false #the server maintains its registry locally
 server:
   port: 8761  #default localhost port

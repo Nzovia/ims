@@ -18,3 +18,30 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+#setting up actuator -> helps in checking the health component of our application
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: all
+  endpoint:
+    health:
+      show-details: never
+
+#configuring resilience4J properties
+resilience4j:
+  circuitbreaker:
+    instances:
+      inventory-s:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 5 #after 5 fail requests the circuit breaker changes status from closed to open
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
