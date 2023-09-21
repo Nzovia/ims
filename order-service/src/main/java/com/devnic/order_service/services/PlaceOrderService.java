@@ -29,7 +29,7 @@ public class PlaceOrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClient;
 
-    public void makeAnOrder(OrderRequest orderRequest) {
+    public String makeAnOrder(OrderRequest orderRequest) {
         GenerateOrderNumberService orderNumberService = new GenerateOrderNumberService();
         var orderNumber = orderNumberService.generateRandomNumber();
 
@@ -67,7 +67,7 @@ public class PlaceOrderService {
         if (allMatchToProductsInStock) {
             //save to the dataBase
             orderRepository.save(order);
-            log.info("order with number {} created successfully", orderNumber);
+            return "order with number {} created successfully "+orderNumber;
         } else {
             throw new IllegalArgumentException("One of the ordered items might be out stock." +
                     " please retry after 30min");

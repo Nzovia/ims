@@ -4,8 +4,12 @@ package com.devnic.order_service.controller;
 import com.devnic.order_service.dto.OrderRequest;
 import com.devnic.order_service.services.PlaceOrderService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Nicholas Nzovia
@@ -23,13 +27,14 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "inventory-s", fallbackMethod = "inventoryCallFallBack") //monitoring any method calls done here
-    public String placeOrder(@RequestBody OrderRequest orderRequest){
-        placeOrderService.makeAnOrder(orderRequest);
-        return "We have Received Your Order";
+    @TimeLimiter(name="inventory-s")
+    @Retry(name="inventory-s")
+    public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest){
+        return CompletableFuture.supplyAsync(()->placeOrderService.makeAnOrder(orderRequest));
     }
 
     //method called the times we are unable to call PlaceOrderMethod, or when PlaceOrder Method returns a fail
-    public String inventoryCallFallBack(OrderRequest orderRequest, RuntimeException exception){
-        return "Unable to place your Order, please retry after 5 minutes";
+    public CompletableFuture<String> inventoryCallFallBack(OrderRequest orderRequest, RuntimeException exception){
+        return CompletableFuture.supplyAsync(()-> "Unable to place your Order, please retry after 5 minutes");
     }
 }
